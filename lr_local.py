@@ -6,7 +6,7 @@ np.set_printoptions(suppress=True)
 def compute_distance(a, b):
     distances = []
     for item in b:
-        distances.append( -LA.norm(a - item) )
+        distances.append( -(LA.norm(a - item) / 1) )
 
     w = np.diag(np.exp(distances))
 
@@ -23,7 +23,16 @@ def main():
     theta = LA.inv(x_train.T @ w @ x_train) @ x_train.T @ w @ y_train
     expectation = x_test[0,:] @ theta
 
-    print(expectation)
+    expectations = []
+
+    for test in x_test:
+        w = compute_distance(test, x_train)
+        theta = LA.inv(x_train.T @ w @ x_train) @ x_train.T @ w @ y_train
+        expectation = test @ theta
+        expectations.append(expectation)
+
+    print("expectations", np.array(expectations))
+
 
 if __name__ == "__main__":
     main()
