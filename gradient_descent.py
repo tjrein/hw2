@@ -47,16 +47,18 @@ def main():
 
     rmse = compute_rmse(initial_expected_values, training_targets)
 
-
-    while True and iterations is not 1000:
-
-
+    while iterations <= 1000000:
         gradient = training_features.T @ (training_features @ thetas - training_targets)
         thetas = thetas - (learning_rate * gradient / len(training_features))
         expected = training_features @ thetas
         new_rmse = compute_rmse(training_targets, expected)
 
+        percent_change = np.abs((new_rmse - rmse) / rmse * 100)
+        if percent_change <= 2 ** -23:
+            break
+
         iterations += 1
+        rmse = new_rmse
 
     testing_expected = testing_features @ thetas
     print(compute_rmse(testing_targets, testing_expected))
