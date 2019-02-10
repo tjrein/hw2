@@ -2,13 +2,8 @@ import numpy as np
 from numpy import linalg as LA
 from math import ceil
 
-np.set_printoptions(suppress=True)
-
 def compute_rmse(targets, expected):
     return np.sqrt(((targets - expected) ** 2).mean())
-
-def linear_regression(features, targets):
-    return LA.inv(features.T @ features) @ features.T @ targets
 
 def separate_data(data):
     targets = data[:, 2:]
@@ -39,14 +34,34 @@ def main():
     std = np.std(training_features, axis=0, ddof=1)
 
     training_features = standardize(training_features, mean, std)
-
-    theta = linear_regression(training_features, training_targets)
-
     testing_features = standardize(testing_features, mean, std)
-    expected = testing_features @ theta
 
-    rmse = compute_rmse(testing_targets, expected)
+    random_thetas = 2 * np.random.random_sample((3, 1)) - 1
+    learning_rate = 0.01
 
-    print("rmse", rmse)
-if __name__ == "__main__":
+    change_in_rmse = 1
+    iterations = 0
+
+    thetas = random_thetas
+    initial_expected_values = training_features @ thetas
+
+    rmse = compute_rmse(initial_expected_values, training_targets)
+
+
+    while True and iterations is not 1000:
+
+
+        gradient = training_features.T @ (training_features @ thetas - training_targets)
+        thetas = thetas - (learning_rate * gradient / len(training_features))
+        expected = training_features @ thetas
+        new_rmse = compute_rmse(training_targets, expected)
+
+        iterations += 1
+
+    testing_expected = testing_features @ thetas
+    print(compute_rmse(testing_targets, testing_expected))
+
+    return
+
+if __name__ == '__main__':
     main()
