@@ -41,12 +41,12 @@ def main():
     training_features = standardize(training_features, mean, std)
     theta = linear_regression(training_features, training_targets)
 
+
     testing_features = standardize(testing_features, mean, std)
     expected = testing_features @ theta
 
     rmse = compute_rmse(testing_targets, expected)
 
-    print(rmse)
-
+    print("rmse", rmse)
 if __name__ == "__main__":
     main()

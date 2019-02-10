@@ -1,38 +1,73 @@
 import numpy as np
 from numpy import linalg as LA
+from math import ceil
 
 np.set_printoptions(suppress=True)
 
-def compute_distance(a, b):
+def compute_rmse(targets, expected):
+    return np.sqrt(((targets - expected) ** 2).mean())
+
+def compute_distance(a, b, k=1):
     distances = []
     for item in b:
-        distances.append( -(LA.norm(a - item) / 1) )
+        #test = np.sqrt(np.sum((a - item) ** 2))
+        #test = -(a - item) ** 2
+        #distances.append(np.sum(test))
+
+        distances.append( -(LA.norm(a - item) / k) )
 
     w = np.diag(np.exp(distances))
 
     return w
 
+def separate_data(data):
+    targets = data[:, 2:]
+    features = data[:, :2]
+    return (targets, features)
+
+def standardize(features, mean=None, std=None):
+    features = (features - mean) / std
+    ones = np.ones((features.shape[0], 1))
+    features = np.append(ones, features, axis=1)
+    return features
+
 def main():
-    x_train = np.array([ [1, 1], [1,3], [1, 5], [1, 6] ])
-    y_train = np.array([ [6], [9], [17], [12] ])
-    x_test = np.array([ [1, 2], [1, 4]])
-    y_test = np.array([ [1, 5] ])
+    #training_features = np.array([ [1], [3], [5], [6] ])
+    #training_targets = np.array([ [6], [9], [17], [12] ])
+    #testing_features = np.array([ [2], [4]])
+    #testing_targets = np.array([ [1], [5] ])
 
+    data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
 
-    w = compute_distance(x_test[0,:], x_train)
-    theta = LA.inv(x_train.T @ w @ x_train) @ x_train.T @ w @ y_train
-    expectation = x_test[0,:] @ theta
+    np.random.seed(0)
+    np.random.shuffle(data)
+
+    range = ceil(len(data) * 2/3)
+
+    training = data[0:range]
+    testing = data[range:]
+
+    training_targets, training_features = separate_data(training)
+    testing_targets, testing_features = separate_data(testing)
+
+    mean = np.mean(training_features, axis=0)
+    std = np.std(training_features, axis=0, ddof=1)
+
+    training_features = standardize(training_features, mean, std)
+    testing_features = standardize(testing_features, mean, std)
 
     expectations = []
 
-    for test in x_test:
-        w = compute_distance(test, x_train)
-        theta = LA.inv(x_train.T @ w @ x_train) @ x_train.T @ w @ y_train
+    for test in testing_features:
+        w = compute_distance(test, training_features)
+        theta = LA.inv(training_features.T @ w @ training_features) @ training_features.T @ w @ training_targets
         expectation = test @ theta
         expectations.append(expectation)
 
-    print("expectations", np.array(expectations))
+    expectations = np.array(expectations)
 
+    rmse = compute_rmse(testing_targets, expectations)
+    print("rmse", rmse)
 
 if __name__ == "__main__":
     main()
