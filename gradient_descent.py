@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
+import matplotlib.pyplot as plt
 from math import ceil
 
 def compute_rmse(targets, expected):
@@ -47,6 +48,8 @@ def main():
 
     rmse = compute_rmse(initial_expected_values, training_targets)
 
+    plot = ([iterations + 1], [rmse])
+
     while iterations <= 1000000:
         gradient = training_features.T @ (training_features @ thetas - training_targets)
         thetas = thetas - (learning_rate * gradient / len(training_features))
@@ -60,8 +63,15 @@ def main():
         iterations += 1
         rmse = new_rmse
 
+        plot[0].append(iterations)
+        plot[1].append(rmse)
+
     testing_expected = testing_features @ thetas
-    print(compute_rmse(testing_targets, testing_expected))
+    testing_rmse = compute_rmse(testing_targets, testing_expected)
+    print(testing_rmse)
+
+    plt.plot(plot[0], plot[1])
+    plt.show()
 
     return
 
