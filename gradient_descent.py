@@ -48,15 +48,20 @@ def main():
 
     rmse = compute_rmse(initial_expected_values, training_targets)
 
-    plot = ([iterations + 1], [rmse])
+    plot = ([iterations + 1], [rmse], [compute_rmse(testing_features @ thetas, testing_targets)])
 
     while iterations <= 1000000:
         gradient = training_features.T @ (training_features @ thetas - training_targets)
         thetas = thetas - (learning_rate * gradient / len(training_features))
+
         expected = training_features @ thetas
+        expected_testing = testing_features @ thetas
+
         new_rmse = compute_rmse(training_targets, expected)
+        testing_rmse = compute_rmse(testing_targets, expected_testing)
 
         percent_change = np.abs((new_rmse - rmse) / rmse * 100)
+
         if percent_change <= 2 ** -23:
             break
 
@@ -65,12 +70,15 @@ def main():
 
         plot[0].append(iterations)
         plot[1].append(rmse)
+        plot[2].append(testing_rmse)
 
-    testing_expected = testing_features @ thetas
-    testing_rmse = compute_rmse(testing_targets, testing_expected)
-    print(testing_rmse)
+    final_expected = testing_features @ thetas
+    final_rmse = compute_rmse(testing_targets, final_expected)
+
+    print(final_rmse)
 
     plt.plot(plot[0], plot[1])
+    plt.plot(plot[0], plot[2])
     plt.show()
 
     return
