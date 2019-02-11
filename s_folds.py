@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 from numpy import linalg as LA
 
 def compute_se(targets, expected):
@@ -44,9 +45,20 @@ def perform_s_folds(s, data):
     return rmse
 
 def main():
+    args = sys.argv
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
-
     s = 3
+
+    if len(args) > 1:
+        if args[1].isdigit():
+            s = int(args[1])
+            if s == 1:
+                print("S-Folds must be larger than 1")
+                return
+        elif args[1].lower() == 'n':
+            s = len(data)
+        else:
+            return
 
     all_rmse = []
     for i in range(0, 20):
@@ -59,7 +71,6 @@ def main():
 
     rmse_mean = np.mean(all_rmse, axis=0)
     rmse_std = np.std(all_rmse, axis=0, ddof=1)
-
 
     return
 

@@ -5,6 +5,7 @@ from math import ceil
 np.set_printoptions(suppress=True)
 
 def compute_rmse(targets, expected):
+    test_se = (targets - expected) ** 2
     return np.sqrt(((targets - expected) ** 2).mean())
 
 def linear_regression(features, targets):
