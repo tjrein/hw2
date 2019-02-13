@@ -53,8 +53,7 @@ def main():
         if args[1].isdigit():
             s = int(args[1])
             if s == 1:
-                print("S-Folds must be larger than 1")
-                return
+                return print("S-Folds must be larger than 1")
         elif args[1].lower() == 'n':
             s = len(data)
         else:
@@ -68,9 +67,11 @@ def main():
         rmse = perform_s_folds(s, split_data)
         all_rmse.append(rmse)
 
-
     rmse_mean = np.mean(all_rmse, axis=0)
     rmse_std = np.std(all_rmse, axis=0, ddof=1)
+
+    print("rmse_mean", rmse_mean)
+    print("rmse_std", rmse_std)
 
     return
 
