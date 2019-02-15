@@ -1,10 +1,10 @@
 import numpy as np
 import sys
 from numpy import linalg as LA
-from standardization import standardize, separate_data
+from data_operations import standardize, isolate_sets
 
-def compute_se(targets, expected):
-    return (targets - expected) ** 2
+def compute_se(y, expected):
+    return (y - expected) ** 2
 
 def compute_rmse(se):
     return np.sqrt(se.mean())
@@ -16,18 +16,11 @@ def perform_s_folds(s, data):
         training = [x for j, x in enumerate(data) if j != i]
         training = np.vstack(training)
 
-        training_targets, training_features = separate_data(training)
-        testing_targets, testing_features = separate_data(testing)
+        train_x, train_y, test_x, test_y = isolate_sets(training, testing)
 
-        mean = np.mean(training_features, axis=0)
-        std = np.std(training_features, axis=0, ddof=1)
-
-        training_features = standardize(training_features, mean, std)
-        testing_features = standardize(testing_features, mean, std)
-
-        theta = LA.inv(training_features.T @ training_features) @ training_features.T @ training_targets
-        expected = testing_features @ theta
-        error = compute_se(testing_targets, expected)
+        theta = LA.inv(train_x.T @ train_x) @ train_x.T @ train_y
+        expected = test_x @ theta
+        error = compute_se(test_y, expected)
         se.append(error)
 
     se = np.vstack(se)

@@ -1,9 +1,8 @@
 import numpy as np
 from numpy import linalg as LA
-from math import ceil
-from standardization import standardize, separate_data, handle_data, compute_rmse
+from data_operations import handle_data, compute_rmse
 
-def compute_distance(a, b, k=1):
+def compute_model(a, b, k=1):
     distances = []
 
     for item in b:
@@ -19,7 +18,7 @@ def main():
     expectations = []
 
     for obs in test_x:
-        w = compute_distance(obs, train_x)
+        w = compute_model(obs, train_x)
         theta = LA.inv(train_x.T @ w @ train_x) @ train_x.T @ w @ train_y
         expectation = obs @ theta
         expectations.append(expectation)

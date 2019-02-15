@@ -1,8 +1,7 @@
 import numpy as np
 from numpy import linalg as LA
 import matplotlib.pyplot as plt
-from math import ceil
-from standardization import standardize, separate_data, handle_data, compute_rmse
+from data_operations import handle_data, compute_rmse
 
 def plot_gr(plot):
     plt.plot(plot[0], plot[1], label="train")

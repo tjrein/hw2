@@ -1,7 +1,6 @@
 import numpy as np
 from numpy import linalg as LA
-from math import ceil
-from standardization import standardize, separate_data, handle_data, compute_rmse
+from data_operations import handle_data, compute_rmse
 
 def main():
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
