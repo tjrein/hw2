@@ -49,9 +49,10 @@
 ==== s_folds.py ====
 
   This script performs S-Folds cross validation on the x06Simple data set.
-  The script can be initialized with an optional integer parameter to specify the number of folds.
+  The script can be initialized with an optional parameter to specify the number of folds.
 
   To execute, type "python3 s_folds.py {s}" where s is an integer.
+  One can also pass "n" as a parameter, which will use length of the data set as the number of folds.
   If no argument is passed, the script will default to using 3 folds.
 
   The script will output the final RMSE and standard deviation of performing S-Folds 20 different times.
