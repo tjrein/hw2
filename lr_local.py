@@ -67,7 +67,7 @@ def main():
     expectations = np.array(expectations)
 
     rmse = compute_rmse(testing_targets, expectations)
-    print("rmse", rmse)
+    print("Root mean squared error:", rmse)
 
 if __name__ == "__main__":
     main()

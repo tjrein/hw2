@@ -26,7 +26,6 @@ def main():
 
     np.random.seed(0)
     np.random.shuffle(data)
-
     range = ceil(len(data) * 2/3)
 
     training = data[0:range]
@@ -39,14 +38,14 @@ def main():
     std = np.std(training_features, axis=0, ddof=1)
 
     training_features = standardize(training_features, mean, std)
+    testing_features = standardize(testing_features, mean, std)
 
     theta = linear_regression(training_features, training_targets)
-
-    testing_features = standardize(testing_features, mean, std)
     expected = testing_features @ theta
-
     rmse = compute_rmse(testing_targets, expected)
 
-    print("rmse", rmse)
+    print("Theta:\n", theta)
+    print("Root mean squared error:", rmse)
+
 if __name__ == "__main__":
     main()

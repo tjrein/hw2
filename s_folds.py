@@ -70,8 +70,8 @@ def main():
     rmse_mean = np.mean(all_rmse, axis=0)
     rmse_std = np.std(all_rmse, axis=0, ddof=1)
 
-    print("rmse_mean", rmse_mean)
-    print("rmse_std", rmse_std)
+    print(f"Average RMSE over {s} folds:", rmse_mean)
+    print(f"Standard deviation over {s} folds:", rmse_std)
 
     return
 

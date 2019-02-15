@@ -75,7 +75,8 @@ def main():
     final_expected = testing_features @ thetas
     final_rmse = compute_rmse(testing_targets, final_expected)
 
-    print(final_rmse)
+    print("Thetas:\n", thetas)
+    print("Root mean square error:", final_rmse)
 
     plt.plot(plot[0], plot[1])
     plt.plot(plot[0], plot[2])
