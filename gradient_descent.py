@@ -2,53 +2,46 @@ import numpy as np
 from numpy import linalg as LA
 import matplotlib.pyplot as plt
 from math import ceil
-from standardization import standardize, separate_data
+from standardization import standardize, separate_data, handle_data
 
-def compute_rmse(targets, expected):
-    return np.sqrt(((targets - expected) ** 2).mean())
+def compute_rmse(y, expected):
+    return np.sqrt(((y - expected) ** 2).mean())
+
+def plot_gr(plot):
+    plt.plot(plot[0], plot[1], label="train")
+    plt.plot(plot[0], plot[2], label="test")
+    plt.xlabel("Iterations")
+    plt.ylabel("RMSE")
+    plt.legend()
+    plt.savefig("gradient_descent", bbox_inches="tight")
+    plt.show()
 
 def main():
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
 
-    np.random.seed(0)
-    np.random.shuffle(data)
-
-    range = ceil(len(data) * 2/3)
-
-    training = data[0:range]
-    testing = data[range:]
-
-    training_targets, training_features = separate_data(training)
-    testing_targets, testing_features = separate_data(testing)
-
-    mean = np.mean(training_features, axis=0)
-    std = np.std(training_features, axis=0, ddof=1)
-
-    training_features = standardize(training_features, mean, std)
-    testing_features = standardize(testing_features, mean, std)
+    train_x, train_y, test_x, test_y = handle_data(data)
 
     random_thetas = 2 * np.random.random_sample((3, 1)) - 1
     learning_rate = 0.01
-
-    change_in_rmse = 1
     iterations = 0
 
     thetas = random_thetas
-    initial_expected_values = training_features @ thetas
+    initial_expected_values = train_x @ thetas
 
-    rmse = compute_rmse(initial_expected_values, training_targets)
+    rmse = compute_rmse(train_x @ thetas, train_y)
+    test_rmse = compute_rmse(test_x @ thetas, test_y)
 
-    plot = ([iterations + 1], [rmse], [compute_rmse(testing_features @ thetas, testing_targets)])
+    plot = ([iterations + 1], [rmse], [test_rmse])
 
     while iterations <= 1000000:
-        gradient = training_features.T @ (training_features @ thetas - training_targets)
-        thetas = thetas - (learning_rate * gradient / len(training_features))
+        gradient = train_x.T @ (train_x @ thetas - train_y)
+        thetas = thetas - (learning_rate * gradient / len(train_x))
 
-        expected = training_features @ thetas
-        expected_testing = testing_features @ thetas
+        expected = train_x @ thetas
+        expected_test = test_x @ thetas
 
-        new_rmse = compute_rmse(training_targets, expected)
-        testing_rmse = compute_rmse(testing_targets, expected_testing)
+        new_rmse = compute_rmse(train_y, expected)
+        test_rmse = compute_rmse(test_y, expected_test)
 
         percent_change = np.abs((new_rmse - rmse) / rmse * 100)
 
@@ -60,20 +53,15 @@ def main():
 
         plot[0].append(iterations)
         plot[1].append(rmse)
-        plot[2].append(testing_rmse)
+        plot[2].append(test_rmse)
 
-    final_expected = testing_features @ thetas
-    final_rmse = compute_rmse(testing_targets, final_expected)
+    final_expected = test_x @ thetas
+    final_rmse = compute_rmse(test_y, final_expected)
 
     print("Thetas:\n", thetas)
     print("Root mean square error:", final_rmse)
 
-    plt.plot(plot[0], plot[1], label="training")
-    plt.plot(plot[0], plot[2], label="testing")
-    plt.xlabel("Iterations")
-    plt.ylabel("RMSE")
-    plt.legend()
-    plt.show()
+    plot_gr(plot)
 
     return
 
