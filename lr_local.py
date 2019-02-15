@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import linalg as LA
 from math import ceil
+from standardization import standardize, separate_data
 
 np.set_printoptions(suppress=True)
 
@@ -10,33 +11,13 @@ def compute_rmse(targets, expected):
 def compute_distance(a, b, k=1):
     distances = []
     for item in b:
-        #test = np.sqrt(np.sum((a - item) ** 2))
-        #test = -(a - item) ** 2
-        #distances.append(np.sum(test))
-
-        distances.append( -(LA.norm(a - item) / k) )
+        distance = -(LA.norm((a - item), ord=1) / k ** 2)
+        distances.append(distance)
 
     w = np.diag(np.exp(distances))
-
     return w
 
-def separate_data(data):
-    targets = data[:, 2:]
-    features = data[:, :2]
-    return (targets, features)
-
-def standardize(features, mean=None, std=None):
-    features = (features - mean) / std
-    ones = np.ones((features.shape[0], 1))
-    features = np.append(ones, features, axis=1)
-    return features
-
 def main():
-    #training_features = np.array([ [1], [3], [5], [6] ])
-    #training_targets = np.array([ [6], [9], [17], [12] ])
-    #testing_features = np.array([ [2], [4]])
-    #testing_targets = np.array([ [1], [5] ])
-
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
 
     np.random.seed(0)
@@ -49,6 +30,11 @@ def main():
 
     training_targets, training_features = separate_data(training)
     testing_targets, testing_features = separate_data(testing)
+
+    #training_features = np.array([ [1], [3], [5], [6] ])
+    #training_targets = np.array([ [6], [9], [17], [12] ])
+    #testing_features = np.array([ [2], [4]])
+    #testing_targets = np.array([ [1], [5] ])
 
     mean = np.mean(training_features, axis=0)
     std = np.std(training_features, axis=0, ddof=1)

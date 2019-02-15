@@ -1,23 +1,13 @@
 import numpy as np
 import sys
 from numpy import linalg as LA
+from standardization import standardize, separate_data
 
 def compute_se(targets, expected):
     return (targets - expected) ** 2
 
 def compute_rmse(se):
     return np.sqrt(se.mean())
-
-def separate_data(data):
-    targets = data[:, 2:]
-    features = data[:, :2]
-    return (targets, features)
-
-def standardize(features, mean=None, std=None):
-    features = (features - mean) / std
-    ones = np.ones((features.shape[0], 1))
-    features = np.append(ones, features, axis=1)
-    return features
 
 def perform_s_folds(s, data):
     se = []

@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import linalg as LA
 from math import ceil
+from standardization import standardize, separate_data
 
 np.set_printoptions(suppress=True)
 
@@ -9,17 +10,6 @@ def compute_rmse(targets, expected):
 
 def linear_regression(features, targets):
     return LA.inv(features.T @ features) @ features.T @ targets
-
-def separate_data(data):
-    targets = data[:, 2:]
-    features = data[:, :2]
-    return (targets, features)
-
-def standardize(features, mean=None, std=None):
-    features = (features - mean) / std
-    ones = np.ones((features.shape[0], 1))
-    features = np.append(ones, features, axis=1)
-    return features
 
 def main():
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))

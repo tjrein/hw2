@@ -2,20 +2,10 @@ import numpy as np
 from numpy import linalg as LA
 import matplotlib.pyplot as plt
 from math import ceil
+from standardization import standardize, separate_data
 
 def compute_rmse(targets, expected):
     return np.sqrt(((targets - expected) ** 2).mean())
-
-def separate_data(data):
-    targets = data[:, 2:]
-    features = data[:, :2]
-    return (targets, features)
-
-def standardize(features, mean=None, std=None):
-    features = (features - mean) / std
-    ones = np.ones((features.shape[0], 1))
-    features = np.append(ones, features, axis=1)
-    return features
 
 def main():
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
@@ -78,8 +68,11 @@ def main():
     print("Thetas:\n", thetas)
     print("Root mean square error:", final_rmse)
 
-    plt.plot(plot[0], plot[1])
-    plt.plot(plot[0], plot[2])
+    plt.plot(plot[0], plot[1], label="training")
+    plt.plot(plot[0], plot[2], label="testing")
+    plt.xlabel("Iterations")
+    plt.ylabel("RMSE")
+    plt.legend()
     plt.show()
 
     return
