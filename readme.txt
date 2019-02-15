@@ -19,6 +19,7 @@
   * lr_local.py
   * s_folds.py
   * gradient_descent.py
+  * requirements.txt
   * x06Simple.csv
 
   NOTE: x065Simple.csv needs to be in the present working directory.
