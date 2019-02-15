@@ -1,13 +1,11 @@
 import numpy as np
 from numpy import linalg as LA
 from math import ceil
-from standardization import standardize, separate_data, handle_data
-
-def compute_rmse(y, expected):
-    return np.sqrt(((y - expected) ** 2).mean())
+from standardization import standardize, separate_data, handle_data, compute_rmse
 
 def compute_distance(a, b, k=1):
     distances = []
+
     for item in b:
         distance = -(LA.norm((a - item), ord=1) / k ** 2)
         distances.append(distance)
@@ -17,9 +15,7 @@ def compute_distance(a, b, k=1):
 
 def main():
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
-
     train_x, train_y, test_x, test_y = handle_data(data)
-
     expectations = []
 
     for obs in test_x:
