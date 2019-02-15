@@ -18,15 +18,12 @@ def plot_gr(plot):
 
 def main():
     data = np.genfromtxt('./x06Simple.csv', delimiter=',', dtype="uint16", skip_header=1, usecols=(1,2,3))
-
     train_x, train_y, test_x, test_y = handle_data(data)
-
     random_thetas = 2 * np.random.random_sample((3, 1)) - 1
     learning_rate = 0.01
     iterations = 0
 
     thetas = random_thetas
-    initial_expected_values = train_x @ thetas
 
     rmse = compute_rmse(train_x @ thetas, train_y)
     test_rmse = compute_rmse(test_x @ thetas, test_y)
